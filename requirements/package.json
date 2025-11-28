@@ -1,0 +1,32 @@
+{
+  "name": "vibe-a-thon-docs",
+  "version": "1.0.0",
+  "description": "VitePress documentation for Vibe-a-thon workshop setup guide",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "keywords": [
+    "vitepress",
+    "documentation",
+    "workshop",
+    "setup-guide",
+    "vibe-a-thon"
+  ],
+  "author": "IT Circle KHEC <itcirclekhec@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itcircleatkhce/vibe-a-thon-form.git",
+    "directory": "requirements"
+  },
+  "bugs": {
+    "url": "https://github.com/itcircleatkhce/vibe-a-thon-form/issues"
+  },
+  "homepage": "https://github.com/itcircleatkhce/vibe-a-thon-form#readme"
+}
