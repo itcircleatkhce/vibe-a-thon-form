@@ -30,7 +30,6 @@ export interface RegistrationData {
   
   // Section 3: Analytical Questions
   why_join: string
-  problem_solution: string
   shipping_experience: string
   
   // Metadata

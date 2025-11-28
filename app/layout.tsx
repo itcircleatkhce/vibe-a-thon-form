@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   description: "Register for Vibe-a-thon, the ultimate tech bootcamp experience. Learn web development, AI/ML, cloud computing, and more in a fun, collaborative environment.",
   keywords: ["bootcamp", "tech", "coding", "hackathon", "web development", "programming", "vibe-a-thon"],
   authors: [{ name: "Vibe-a-thon Team" }],
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     title: "Vibe-a-thon | Tech Bootcamp Registration",
     description: "Join the ultimate coding adventure and level up your skills!",

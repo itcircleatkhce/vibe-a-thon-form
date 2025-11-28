@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS registrations (
   
   -- Section 3: Analytical Questions
   why_join TEXT NOT NULL,
-  problem_solution TEXT NOT NULL,
   shipping_experience TEXT NOT NULL,
   
   -- Metadata
@@ -74,5 +73,4 @@ COMMENT ON COLUMN registrations.primary_skillset IS 'Primary area of expertise';
 COMMENT ON COLUMN registrations.git_proficiency IS 'Git/GitHub proficiency level';
 COMMENT ON COLUMN registrations.technologies IS 'Array of familiar technologies';
 COMMENT ON COLUMN registrations.why_join IS 'Motivation for joining the bootcamp';
-COMMENT ON COLUMN registrations.problem_solution IS 'Problem-solution description';
 COMMENT ON COLUMN registrations.shipping_experience IS 'Product shipping experience level';

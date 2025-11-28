@@ -218,18 +218,13 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
               )}
             </div>
 
-            {/* College */}
             <div className="space-y-2">
               <Label htmlFor="college" className="text-vibe-dark">
-                College/University <span className="text-vibe-red" aria-hidden="true">*</span>
+                College <span className="text-vibe-red" aria-hidden="true">*</span>
               </Label>
-              <Input
-                id="college"
-                name="college"
-                type="text"
-                placeholder="Enter your college name"
+              <Select
                 value={formData.college}
-                onChange={(e) => onChange("college", e.target.value)}
+                onValueChange={(value) => onChange("college", value)}
                 aria-required="true"
                 aria-invalid={!!errors.college}
                 aria-describedby={errors.college ? "college_error" : undefined}
@@ -239,7 +234,15 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                   focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
                   ${errors.college ? "border-vibe-red animate-shake" : ""}
                 `}
-              />
+              >
+                <SelectTrigger id="college">
+                  <SelectValue placeholder="Select your college" />
+                </SelectTrigger>
+                <SelectContent className="animate-in zoom-in-95 fade-in-0 duration-300">
+                  <SelectItem value="Khwopa College of Engineering">Khwopa College of Engineering</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
               {errors.college && (
                 <p id="college_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.college}

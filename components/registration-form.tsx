@@ -22,7 +22,6 @@ const initialFormData: FormData = {
   git_proficiency: "",
   technologies: [],
   why_join: "",
-  problem_solution: "",
   shipping_experience: "",
 }
 
@@ -109,12 +108,6 @@ export function RegistrationForm() {
       newErrors.why_join = "Please tell us why you want to join"
     } else if (formData.why_join.trim().length < 50) {
       newErrors.why_join = "Please provide at least 50 characters"
-    }
-    
-    if (!formData.problem_solution.trim()) {
-      newErrors.problem_solution = "Please describe a problem and solution"
-    } else if (formData.problem_solution.trim().length < 50) {
-      newErrors.problem_solution = "Please provide more detail (at least 50 characters)"
     }
     
     if (!formData.shipping_experience) {
@@ -268,7 +261,6 @@ export function RegistrationForm() {
             <Section3Analytical
               formData={{
                 why_join: formData.why_join,
-                problem_solution: formData.problem_solution,
                 shipping_experience: formData.shipping_experience,
               }}
               onChange={handleChange}
