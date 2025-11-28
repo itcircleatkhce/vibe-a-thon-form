@@ -622,13 +622,386 @@ div[class*="language-"]:before {
   font-weight: 600 !important;
 }
 
-/* Responsive Design */
+/* Global image responsiveness */
+img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Ensure VitePress images are responsive */
+.VPImage,
+.VPHero .VPImage {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* Prevent horizontal overflow */
+* {
+  box-sizing: border-box !important;
+}
+
+body {
+  overflow-x: hidden !important;
+}
+
+.VPContent,
+.VPDoc,
+.VPHome {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+}
+
+/* Comprehensive Mobile Responsive Design */
+
+/* Mobile First - Base styles for mobile */
 @media (max-width: 768px) {
-  .VPHero .image img {
-    max-width: 400px !important;
+  /* General Layout */
+  :root {
+    --vp-sidebar-width: 280px;
+    --vp-layout-max-width: 100%;
+  }
+
+  /* Hero Section */
+  .VPHero .container {
+    flex-direction: column !important;
+    gap: 2rem !important;
+    padding: 1rem !important;
+    min-height: 70vh !important;
+    text-align: center !important;
+    justify-items: center !important;
+    align-items: center !important;
+  }
+  
+  .VPHero .main {
+    padding-right: 0 !important;
+    order: 2 !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+  
+  .VPHero .image {
+    order: 1 !important;
+    margin-bottom: 1rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow: visible !important;
+  }
+  
+  .VPHero .image img,
+  .VPHome .VPHero .image img,
+  .VPHero .VPImage {
+    width: auto !important;
+    max-width: min(350px, 80vw) !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    object-fit: contain !important;
+  }
+  
+  .VPHero .text,
+  .VPHero .name {
+    font-size: 1.75rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .VPHero .tagline {
+    font-size: 1.1rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 2rem !important;
+    padding: 0 1rem !important;
+  }
+
+  /* Navigation */
+  .VPNavBar {
+    padding: 0 1rem !important;
+  }
+  
+  .VPNavBarTitle .title {
+    font-size: 1.2rem !important;
+  }
+
+  /* Sidebar */
+  .VPSidebar {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Content */
+  .VPDoc .container,
+  .VPContent {
+    padding: 0 1rem !important;
+    margin: 0 !important;
+  }
+  
+  .vp-doc {
+    padding: 1rem !important;
+  }
+  
+  /* Typography */
+  .vp-doc h1 {
+    font-size: 2rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .vp-doc h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.4 !important;
+    margin-top: 1.5rem !important;
+  }
+  
+  .vp-doc h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .vp-doc h4 {
+    font-size: 1.1rem !important;
+  }
+  
+  .vp-doc p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Code blocks */
+  .vp-doc pre,
+  .vp-doc div[class*="language-"] {
+    margin: 1rem -1rem !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 1rem !important;
+    overflow-x: auto !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .vp-doc :not(pre) > code {
+    font-size: 0.85rem !important;
+    padding: 0.2rem 0.3rem !important;
+    word-break: break-word !important;
+  }
+
+  /* Tables */
+  .vp-doc table {
+    font-size: 0.9rem !important;
+    overflow-x: auto !important;
+    display: block !important;
+    white-space: nowrap !important;
+  }
+  
+  .vp-doc th,
+  .vp-doc td {
+    padding: 0.5rem !important;
+  }
+
+  /* Features */
+  .VPFeatures {
+    padding: 1rem !important;
+    margin: 2rem 0 !important;
+  }
+  
+  .VPFeature {
+    margin-bottom: 1rem !important;
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .VPFeature .title {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .VPFeature .details {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Buttons */
+  .VPButton {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    border-radius: 0.5rem !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 0.5rem auto !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  /* Footer */
+  .VPFooter {
+    padding: 2rem 1rem !important;
+    text-align: center !important;
+  }
+  
+  .VPFooter .message,
+  .VPFooter .copyright {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Search */
+  .VPNavBarSearch .DocSearch-Button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .VPNavBarSearch .DocSearch-Button-Keys {
+    display: none !important;
+  }
+
+  /* Custom blocks */
+  .vp-doc .custom-block {
+    margin: 1rem -1rem !important;
+    border-radius: 0 !important;
+    border-left: 4px solid !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    padding: 1rem !important;
+  }
+
+  /* Links - make them more touch-friendly */
+  .vp-doc a {
+    padding: 0.2rem 0 !important;
+    display: inline-block !important;
+  }
+
+  /* Ensure proper spacing */
+  .VPContent {
+    min-height: auto !important;
+  }
+  
+  .VPDoc .container {
+    min-height: auto !important;
+    padding-bottom: 2rem !important;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .VPHero .text,
+  .VPHero .name {
+    font-size: 1.5rem !important;
+  }
+  
+  .VPHero .tagline {
+    font-size: 1rem !important;
+  }
+  
+  .vp-doc h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  .vp-doc h2 {
+    font-size: 1.375rem !important;
+  }
+  
+  .VPHero .image img,
+  .VPHome .VPHero .image img {
+    max-width: 280px !important;
+  }
+  
+  .vp-doc pre,
+  .vp-doc div[class*="language-"] {
+    font-size: 0.75rem !important;
+    padding: 0.75rem !important;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .VPHero .container {
+    gap: 3rem !important;
+    padding: 2rem !important;
+  }
+  
+  .VPHero .image img,
+  .VPHome .VPHero .image img {
+    max-width: 500px !important;
   }
   
   .VPHero .text {
-    font-size: 2rem !important;
+    font-size: 2.25rem !important;
+  }
+  
+  .vp-doc {
+    padding: 2rem !important;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .VPSidebarItem .link {
+    padding: 0.75rem 1rem !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .VPNavBarMenuLink {
+    padding: 0.75rem 1rem !important;
+    min-height: 44px !important;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .VPFeature:hover {
+    transform: none !important;
+  }
+  
+  .VPButton.brand:hover,
+  .VPButton.alt:hover {
+    transform: none !important;
+  }
+  
+  /* Better touch feedback */
+  .VPSidebarItem .link:active,
+  .VPNavBarMenuLink:active,
+  .VPButton:active {
+    background-color: var(--vp-c-brand-mute) !important;
+    transform: scale(0.98) !important;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .VPHero .container {
+    flex-direction: row !important;
+    min-height: 60vh !important;
+  }
+  
+  .VPHero .main {
+    order: 1 !important;
+    flex: 1 !important;
+    text-align: left !important;
+    padding-right: 2rem !important;
+  }
+  
+  .VPHero .image {
+    order: 2 !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .VPHero .image img,
+  .VPHome .VPHero .image img {
+    max-width: 300px !important;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .VPHero .image img,
+  .VPHome .VPHero .image img {
+    image-rendering: -webkit-optimize-contrast !important;
+    image-rendering: crisp-edges !important;
   }
 }

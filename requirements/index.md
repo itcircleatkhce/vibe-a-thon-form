@@ -68,6 +68,21 @@ hero:
   align-items: center !important;
 }
 
+/* Desktop layout - ensure image stays in place */
+@media (min-width: 961px) {
+  .VPHero .image {
+    justify-self: end !important;
+    align-self: center !important;
+    width: auto !important;
+    max-width: 650px !important;
+  }
+  
+  .VPHero .VPImage {
+    max-width: 650px !important;
+    width: 650px !important;
+  }
+}
+
 .VPHero .main {
   max-width: none !important;
   text-align: left !important;
@@ -80,8 +95,9 @@ hero:
 
 .VPHero .VPImage {
   max-width: 650px !important;
-  width: 650px !important;
+  width: 100% !important;
   height: auto !important;
+  object-fit: contain !important;
   animation: mascotFloat 8s ease-in-out infinite, mascotGlow 6s ease-in-out infinite alternate !important;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -223,44 +239,58 @@ hero:
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
     text-align: center !important;
+    padding: 0 1rem !important;
+    justify-items: center !important;
+    align-items: center !important;
   }
   
   .VPHero .main {
     text-align: center !important;
-    order: 2 !important;
+    order: 1 !important;
+    width: 100% !important;
   }
   
   .VPHero .image {
-    order: 1 !important;
-    justify-self: center !important;
-  }
-  
-  .VPHero .VPImage {
-    max-width: 500px !important;
-    width: 500px !important;
+    display: none !important;
   }
 }
 
 @media (max-width: 768px) {
   .VPHero {
-    padding: 60px 20px 40px !important;
+    padding: 60px 0.5rem 40px !important;
+  }
+  
+  .VPHero .container {
+    padding: 0 !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+  
+  .VPHero .image {
+    display: none !important;
   }
   
   .VPHero .name {
-    font-size: 2.8rem !important;
-    white-space: nowrap !important;
+    font-size: 2.5rem !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    line-height: 1.1 !important;
   }
   
   .VPHero .text {
-    font-size: 1.25rem !important;
+    font-size: 1.2rem !important;
+    line-height: 1.3 !important;
   }
   
   .VPHero .tagline {
     font-size: 1rem !important;
+    padding: 0 1rem !important;
+    line-height: 1.5 !important;
   }
   
   .VPFeatures {
-    padding: 60px 20px !important;
+    padding: 40px 1rem !important;
   }
   
   .VPFeature {
@@ -269,14 +299,46 @@ hero:
 }
 
 @media (max-width: 480px) {
+  .VPHero {
+    padding: 40px 0.5rem 30px !important;
+  }
+  
+  .VPHero .container {
+    gap: 1rem !important;
+    padding: 0 0.5rem !important;
+  }
+  
+  .VPHero .image {
+    display: none !important;
+  }
+  
+  .VPHero .name {
+    font-size: 2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .VPHero .text {
+    font-size: 1.1rem !important;
+  }
+  
+  .VPHero .tagline {
+    font-size: 0.95rem !important;
+    padding: 0 0.5rem !important;
+  }
+  
   .VPHero .actions {
     flex-direction: column !important;
     align-items: center !important;
+    padding: 0 1rem !important;
   }
   
   .VPButton {
     width: 100% !important;
     max-width: 280px !important;
+  }
+  
+  .VPFeatures {
+    padding: 30px 0.75rem !important;
   }
 }
 
