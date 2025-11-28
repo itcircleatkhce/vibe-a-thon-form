@@ -54,40 +54,42 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
   return (
     <div className="space-y-8">
       {/* Event Info Card */}
-      <Card className="bg-gradient-to-br from-vibe-mint/20 to-vibe-teal/10 border-vibe-teal/30">
+      <Card className="bg-gradient-to-br from-vibe-mint/20 to-vibe-teal/10 border-vibe-teal/30 group/card hover:shadow-lg transition-all duration-500">
         <CardHeader>
-          <CardTitle className="text-vibe-teal flex items-center gap-2">
-            <Calendar className="w-5 h-5" aria-hidden="true" />
+          <CardTitle className="text-vibe-teal flex items-center gap-2 transition-all duration-500 group-hover/card:translate-x-2">
+            <Calendar className="w-5 h-5 transition-transform duration-500 group-hover/card:scale-110 group-hover/card:rotate-12" aria-hidden="true" />
             Event Details
           </CardTitle>
-          <CardDescription>Join us for an exciting journey into tech!</CardDescription>
+          <CardDescription className="transition-all duration-500 delay-100 group-hover/card:translate-x-1">
+            Join us for an exciting journey into tech!
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-          <div className="flex items-start gap-3">
-            <Clock className="w-5 h-5 text-vibe-teal mt-0.5" aria-hidden="true" />
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <Clock className="w-5 h-5 text-vibe-teal mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
               <p className="font-medium text-vibe-dark">Timing</p>
               <p className="text-sm text-vibe-dark/70">November 29th - December 6th, 2025</p>
               <p className="text-sm text-vibe-dark/70">online and physical session (on holidays)</p>
             </div>
           </div>
-          <div className="flex items-start gap-3">
-            <MapPin className="w-5 h-5 text-vibe-red mt-0.5" aria-hidden="true" />
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <MapPin className="w-5 h-5 text-vibe-red mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
               <p className="font-medium text-vibe-dark">Venue</p>
               <p className="text-sm text-vibe-dark/70">Khwopa College of Engineering</p>
               <p className="text-sm text-vibe-dark/70">Hall 3</p>
             </div>
           </div>
-          <div className="flex items-start gap-3">
-            <Mail className="w-5 h-5 text-vibe-orange mt-0.5" aria-hidden="true" />
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <Mail className="w-5 h-5 text-vibe-orange mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
               <p className="font-medium text-vibe-dark">Contact</p>
               <p className="text-sm text-vibe-dark/70">itcirclekhec@gmail.com</p>
             </div>
           </div>
-          <div className="flex items-start gap-3">
-            <Phone className="w-5 h-5 text-vibe-maroon mt-0.5" aria-hidden="true" />
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <Phone className="w-5 h-5 text-vibe-maroon mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
               <p className="font-medium text-vibe-dark">Phone</p>
               <p className="text-sm text-vibe-dark/70">+977 9869195454, 9861495924</p>
@@ -97,16 +99,18 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
       </Card>
 
       {/* Topics Covered */}
-      <Card className="border-vibe-blush/50">
+      <Card className="border-vibe-blush/50 group/card hover:shadow-lg transition-all duration-500">
         <CardHeader>
-          <CardTitle className="text-vibe-red">Topics & Mediums</CardTitle>
+          <CardTitle className="text-vibe-red transition-all duration-500 group-hover/card:translate-x-2">
+            Topics & Mediums
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
-            {["Git/guthub", "prompt generation", "AI/ML", "supabase", "Rest API", "UI/UX Design", "Vercel deployment", "Mini hackathon"].map((topic) => (
+            {["Git/Github", "Prompt Generation", "AI/ML", "Supabase", "Rest API", "UI/UX Design", "Vercel Deployment", "Mini Hackathon"].map((topic) => (
               <span
                 key={topic}
-                className="px-3 py-1.5 bg-vibe-mint/30 text-vibe-dark rounded-full text-sm font-medium"
+                className="px-3 py-1.5 bg-vibe-mint/30 text-vibe-dark rounded-full text-sm font-medium transition-all duration-300 hover:scale-110 hover:bg-vibe-mint/50 hover:shadow-md cursor-default"
               >
                 {topic}
               </span>
@@ -116,10 +120,14 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
       </Card>
 
       {/* Personal Information Form */}
-      <Card className="form-section">
+      <Card className="form-section group/card hover:shadow-lg transition-all duration-500">
         <CardHeader>
-          <CardTitle className="text-vibe-dark">Personal Information</CardTitle>
-          <CardDescription>Please fill in your details to register</CardDescription>
+          <CardTitle className="text-vibe-dark transition-all duration-500 group-hover/card:translate-x-2">
+            Personal Information
+          </CardTitle>
+          <CardDescription className="transition-all duration-500 delay-100 group-hover/card:translate-x-1">
+            Please fill in your details to register
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
@@ -138,10 +146,15 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                 aria-required="true"
                 aria-invalid={!!errors.full_name}
                 aria-describedby={errors.full_name ? "full_name_error" : undefined}
-                className={errors.full_name ? "border-vibe-red" : ""}
+                className={`
+                  transition-all duration-300 ease-out
+                  hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                  focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                  ${errors.full_name ? "border-vibe-red animate-shake" : ""}
+                `}
               />
               {errors.full_name && (
-                <p id="full_name_error" className="text-sm text-vibe-red" role="alert">
+                <p id="full_name_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.full_name}
                 </p>
               )}
@@ -162,10 +175,15 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                 aria-required="true"
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email_error" : undefined}
-                className={errors.email ? "border-vibe-red" : ""}
+                className={`
+                  transition-all duration-300 ease-out
+                  hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                  focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                  ${errors.email ? "border-vibe-red animate-shake" : ""}
+                `}
               />
               {errors.email && (
-                <p id="email_error" className="text-sm text-vibe-red" role="alert">
+                <p id="email_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.email}
                 </p>
               )}
@@ -186,10 +204,15 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                 aria-required="true"
                 aria-invalid={!!errors.phone}
                 aria-describedby={errors.phone ? "phone_error" : undefined}
-                className={errors.phone ? "border-vibe-red" : ""}
+                className={`
+                  transition-all duration-300 ease-out
+                  hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                  focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                  ${errors.phone ? "border-vibe-red animate-shake" : ""}
+                `}
               />
               {errors.phone && (
-                <p id="phone_error" className="text-sm text-vibe-red" role="alert">
+                <p id="phone_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.phone}
                 </p>
               )}
@@ -210,10 +233,15 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                 aria-required="true"
                 aria-invalid={!!errors.college}
                 aria-describedby={errors.college ? "college_error" : undefined}
-                className={errors.college ? "border-vibe-red" : ""}
+                className={`
+                  transition-all duration-300 ease-out
+                  hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                  focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                  ${errors.college ? "border-vibe-red animate-shake" : ""}
+                `}
               />
               {errors.college && (
-                <p id="college_error" className="text-sm text-vibe-red" role="alert">
+                <p id="college_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.college}
                 </p>
               )}
@@ -233,20 +261,29 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                   aria-required="true"
                   aria-invalid={!!errors.department}
                   aria-describedby={errors.department ? "department_error" : undefined}
-                  className={errors.department ? "border-vibe-red" : ""}
+                  className={`
+                    transition-all duration-300 ease-out
+                    hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                    focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                    ${errors.department ? "border-vibe-red animate-shake" : ""}
+                  `}
                 >
                   <SelectValue placeholder="Select your department" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="animate-in zoom-in-95 fade-in-0 duration-300">
                   {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept}>
+                    <SelectItem 
+                      key={dept} 
+                      value={dept}
+                      className="transition-all duration-200 ease-out hover:translate-x-2 hover:bg-vibe-mint/20"
+                    >
                       {dept}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {errors.department && (
-                <p id="department_error" className="text-sm text-vibe-red" role="alert">
+                <p id="department_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.department}
                 </p>
               )}
@@ -266,20 +303,29 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                   aria-required="true"
                   aria-invalid={!!errors.semester}
                   aria-describedby={errors.semester ? "semester_error" : undefined}
-                  className={errors.semester ? "border-vibe-red" : ""}
+                  className={`
+                    transition-all duration-300 ease-out
+                    hover:scale-[1.02] hover:shadow-md hover:border-vibe-teal/50
+                    focus:scale-[1.02] focus:shadow-md focus:border-vibe-teal
+                    ${errors.semester ? "border-vibe-red animate-shake" : ""}
+                  `}
                 >
                   <SelectValue placeholder="Select your semester" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="animate-in zoom-in-95 fade-in-0 duration-300">
                   {semesters.map((sem) => (
-                    <SelectItem key={sem} value={sem}>
+                    <SelectItem 
+                      key={sem} 
+                      value={sem}
+                      className="transition-all duration-200 ease-out hover:translate-x-2 hover:bg-vibe-mint/20"
+                    >
                       {sem}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {errors.semester && (
-                <p id="semester_error" className="text-sm text-vibe-red" role="alert">
+                <p id="semester_error" className="text-sm text-vibe-red transition-all duration-500 animate-in fade-in-0" role="alert">
                   {errors.semester}
                 </p>
               )}
