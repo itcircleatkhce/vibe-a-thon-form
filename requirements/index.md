@@ -6,7 +6,7 @@ hero:
   text: "Developer Workshop Setup"
   tagline: "Complete environment setup guide for modern web development. Get ready to build amazing projects with professional-grade tools."
   image:
-    src: assets/requirements_mascot.png
+    src: /mascot1.png
     alt: Vibe-a-thon Workshop Mascot
   actions:
     - theme: brand
