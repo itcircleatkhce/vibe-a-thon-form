@@ -4,37 +4,37 @@
   :root {
     /* Vibe-a-thon Color Palette */
     --vibe-red: 7 74% 41%; /* #A7372D */
-    --vibe-dark-red: 6 55% 32%; /* #802B24 */
+    --vibe-light-red: 6 55% 32%; /* #802B24 */
     --vibe-teal: 180 55% 39%; /* #2B9A9A */
-    --vibe-cream: 35 56% 90%; /* #F6EBD7 */
+    --vibe-cream: 40 50% 96%; /* Lighter cream */
     --vibe-orange: 25 68% 55%; /* #D85E41 */
     --vibe-maroon: 5 58% 23%; /* #5E1C17 */
     --vibe-mint: 174 53% 70%; /* #8ED9D2 */
     --vibe-blush: 15 43% 77%; /* #E3B7A7 */
-    --vibe-dark: 0 0% 17%; /* #2C2C2C */
+    --vibe-light: 0 0% 17%; /* #2C2C2C */
     --vibe-light: 40 24% 91%; /* #EFE8DE */
     
     /* Theme Variables */
     --background: var(--vibe-cream);
-    --foreground: var(--vibe-dark);
+    --foreground: var(--vibe-light);
     
     --card: 0 0% 100%;
-    --card-foreground: var(--vibe-dark);
+    --card-foreground: var(--vibe-light);
     
     --popover: 0 0% 100%;
-    --popover-foreground: var(--vibe-dark);
+    --popover-foreground: var(--vibe-light);
     
     --primary: var(--vibe-teal);
     --primary-foreground: 0 0% 100%;
     
     --secondary: var(--vibe-mint);
-    --secondary-foreground: var(--vibe-dark);
+    --secondary-foreground: var(--vibe-light);
     
     --muted: var(--vibe-light);
     --muted-foreground: 0 0% 40%;
     
     --accent: var(--vibe-blush);
-    --accent-foreground: var(--vibe-dark);
+    --accent-foreground: var(--vibe-light);
     
     --destructive: var(--vibe-red);
     --destructive-foreground: 0 0% 100%;
@@ -72,7 +72,7 @@
   --color-vibe-red: #A7372D;
   --color-vibe-dark-red: #802B24;
   --color-vibe-teal: #2B9A9A;
-  --color-vibe-cream: #F6EBD7;
+  --color-vibe-cream: #FAF6F0;
   --color-vibe-orange: #D85E41;
   --color-vibe-maroon: #5E1C17;
   --color-vibe-mint: #8ED9D2;
@@ -176,7 +176,7 @@
 
 /* Tech Grid Background - Combined */
 .tech-grid-background {
-  background-color: #F6EBD7;
+  background-color: #FAF6F0;
   background-image:
     linear-gradient(rgba(43, 154, 154, 0.08) 2px, transparent 2px),
     linear-gradient(90deg, rgba(43, 154, 154, 0.08) 2px, transparent 2px);

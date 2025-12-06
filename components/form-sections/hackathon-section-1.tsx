@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { MapPin, Clock, Mail, Phone, Calendar } from "lucide-react"
+import { MapPin, Clock, Mail, Phone, Calendar, Trophy, Users, Lightbulb } from "lucide-react"
 
 interface Section1Props {
   formData: {
@@ -25,7 +25,7 @@ interface Section1Props {
   errors: Record<string, string>
 }
 
-export function Section1Registration({ formData, onChange, errors }: Section1Props) {
+export function Section1HackathonPersonal({ formData, onChange, errors }: Section1Props) {
   const departments = [
     "Computer Science & Engineering",
     "Information Technology",
@@ -53,24 +53,24 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
 
   return (
     <div className="space-y-8">
-      {/* Event Info Card */}
+      {/* Hackathon Event Info Card */}
       <Card className="bg-gradient-to-br from-vibe-mint/20 to-vibe-teal/10 border-vibe-teal/30 group/card hover:shadow-lg transition-all duration-500">
         <CardHeader>
           <CardTitle className="text-vibe-teal flex items-center gap-2 transition-all duration-500 group-hover/card:translate-x-2">
-            <Calendar className="w-5 h-5 transition-transform duration-500 group-hover/card:scale-110 group-hover/card:rotate-12" aria-hidden="true" />
-            Event Details
+            <Trophy className="w-5 h-5 transition-transform duration-500 group-hover/card:scale-110 group-hover/card:rotate-12" aria-hidden="true" />
+            Vibe-a-thon Mini Hackathon 🚀
           </CardTitle>
           <CardDescription className="transition-all duration-500 delay-100 group-hover/card:translate-x-1">
-            Join us for an exciting journey into tech!
+            Build something amazing in one day!
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
-            <Clock className="w-5 h-5 text-vibe-teal mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+            <Calendar className="w-5 h-5 text-vibe-teal mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
-              <p className="font-medium text-vibe-dark">Timing</p>
-              <p className="text-sm text-vibe-dark/70">November 29th - December 6th, 2025</p>
-              <p className="text-sm text-vibe-dark/70">online and physical session (on holidays)</p>
+              <p className="font-medium text-vibe-dark">Date</p>
+              <p className="text-sm text-vibe-dark/70">Yet to be announced</p>
+              <p className="text-sm font-semibold text-vibe-red">Postponed</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
@@ -82,9 +82,36 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <Users className="w-5 h-5 text-vibe-orange mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+            <div>
+              <p className="font-medium text-vibe-dark">Team or individual registration</p>
+              <p className="text-sm text-vibe-dark/70">2-4 members per team</p>
+              <p className="text-sm text-vibe-teal font-medium">Create or join a team!</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
+            <Lightbulb className="w-5 h-5 text-vibe-maroon mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+            <div>
+              <p className="font-medium text-vibe-dark">Theme</p>
+              <p className="text-sm text-vibe-dark/70">Build with AI tools</p>
+              <p className="text-sm text-vibe-dark/70">Showcase your innovation!</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Contact Info */}
+      <Card className="border-vibe-blush/50 group/card hover:shadow-lg transition-all duration-500">
+        <CardHeader>
+          <CardTitle className="text-vibe-red transition-all duration-500 group-hover/card:translate-x-2">
+            Contact Us
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <div className="flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-white/50 hover:scale-[1.02] group">
             <Mail className="w-5 h-5 text-vibe-orange mt-0.5 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
             <div>
-              <p className="font-medium text-vibe-dark">Contact</p>
+              <p className="font-medium text-vibe-dark">Email</p>
               <p className="text-sm text-vibe-dark/70">itcirclekhec@gmail.com</p>
             </div>
           </div>
@@ -98,27 +125,6 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
         </CardContent>
       </Card>
 
-      {/* Topics Covered */}
-      <Card className="border-vibe-blush/50 group/card hover:shadow-lg transition-all duration-500">
-        <CardHeader>
-          <CardTitle className="text-vibe-red transition-all duration-500 group-hover/card:translate-x-2">
-            Topics & Mediums
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {["Git/Github", "Prompt Generation", "AI/ML", "Supabase", "Rest API", "UI/UX Design", "Vercel Deployment", "Mini Hackathon"].map((topic) => (
-              <span
-                key={topic}
-                className="px-3 py-1.5 bg-vibe-mint/30 text-vibe-dark rounded-full text-sm font-medium transition-all duration-300 hover:scale-110 hover:bg-vibe-mint/50 hover:shadow-md cursor-default"
-              >
-                {topic}
-              </span>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Personal Information Form */}
       <Card className="form-section group/card hover:shadow-lg transition-all duration-500">
         <CardHeader>
@@ -126,7 +132,7 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
             Personal Information
           </CardTitle>
           <CardDescription className="transition-all duration-500 delay-100 group-hover/card:translate-x-1">
-            Please fill in your details to register
+            Please fill in your details to register for the hackathon
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -218,6 +224,7 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
               )}
             </div>
 
+            {/* College */}
             <div className="space-y-2">
               <Label htmlFor="college" className="text-vibe-dark">
                 College <span className="text-vibe-red" aria-hidden="true">*</span>
@@ -243,7 +250,6 @@ export function Section1Registration({ formData, onChange, errors }: Section1Pro
                 <SelectContent className="animate-in zoom-in-95 fade-in-0 duration-300">
                   <SelectItem value="Khwopa College of Engineering">Khwopa College of Engineering</SelectItem>
                   <SelectItem value="Khwopa Engineering College">Khwopa Engineering College</SelectItem>
-                 
                 </SelectContent>
               </Select>
               {errors.college && (

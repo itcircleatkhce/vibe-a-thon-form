@@ -1,56 +1,65 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { supabase, isSupabaseConfigured } from "@/lib/supabase"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { createClient } from "@supabase/supabase-js"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Lock, Users, Eye, EyeOff, RefreshCw, Download, LogOut } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Users, User, Clock, CheckCircle, XCircle, Download, LogOut, Eye, RefreshCw, Shield } from "lucide-react"
 
-// Set your admin password here (in production, use environment variable)
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "vibeathon2025"
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
-interface Registration {
-  id: string
-  created_at: string
+interface TeamMember {
   full_name: string
   email: string
   phone: string
   college: string
   department: string
   semester: string
-  coding_experience: string
-  preferred_tools: string[]
-  interest_areas: string[]
-  team_preference: string
-  project_idea: string
-  expectations: string
-  availability: string
-  dietary_restrictions: string
+  is_leader: boolean
 }
+
+interface HackathonEntry {
+  id: string
+  entry_type: 'team' | 'individual'
+  team_name: string | null
+  team_code: string | null
+  idea_title: string
+  idea_description: string
+  idea_category: string
+  members: TeamMember[]
+  status: string
+  created_at: string
+}
+
+const ADMIN_PASSWORD = "vibeathon2025"
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
-  const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [entries, setEntries] = useState<HackathonEntry[]>([])
   const [loading, setLoading] = useState(false)
-  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
+  const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("all")
 
-  // Check session storage for existing auth
   useEffect(() => {
-    const authStatus = sessionStorage.getItem("admin_authenticated")
-    if (authStatus === "true") {
+    const saved = sessionStorage.getItem("adminAuth")
+    if (saved === "true") {
       setIsAuthenticated(true)
     }
   }, [])
 
-  // Fetch registrations when authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      fetchRegistrations()
+      fetchData()
     }
   }, [isAuthenticated])
 
@@ -58,124 +67,148 @@ export default function AdminPage() {
     e.preventDefault()
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true)
-      sessionStorage.setItem("admin_authenticated", "true")
+      sessionStorage.setItem("adminAuth", "true")
       setError("")
     } else {
-      setError("Incorrect password. Please try again.")
+      setError("Invalid password")
     }
   }
 
   const handleLogout = () => {
     setIsAuthenticated(false)
-    sessionStorage.removeItem("admin_authenticated")
-    setRegistrations([])
-    setPassword("")
+    sessionStorage.removeItem("adminAuth")
   }
 
-  const fetchRegistrations = async () => {
-    if (!isSupabaseConfigured() || !supabase) {
-      setError("Supabase is not configured")
-      return
-    }
-
+  const fetchData = async () => {
     setLoading(true)
     try {
       const { data, error } = await supabase
-        .from("registrations")
+        .from("hackathon_entries")
         .select("*")
         .order("created_at", { ascending: false })
 
-      if (error) {
-        console.error("Error fetching registrations:", error)
-        setError("Failed to fetch registrations: " + error.message)
-      } else {
-        setRegistrations(data || [])
-      }
+      if (data) setEntries(data)
+      if (error) console.error("Error fetching:", error)
     } catch (err) {
-      console.error("Error:", err)
-      setError("An error occurred while fetching data")
-    } finally {
-      setLoading(false)
+      console.error("Error fetching data:", err)
+    }
+    setLoading(false)
+  }
+
+  const updateStatus = async (entryId: string, newStatus: string) => {
+    const { error } = await supabase
+      .from("hackathon_entries")
+      .update({ status: newStatus })
+      .eq("id", entryId)
+
+    if (!error) {
+      setEntries(entries.map(e => e.id === entryId ? { ...e, status: newStatus } : e))
     }
   }
 
-  const exportToCSV = () => {
-    if (registrations.length === 0) return
-
-    const headers = [
-      "ID", "Created At", "Full Name", "Email", "Phone", "College", 
-      "Department", "Semester", "Coding Experience", "Preferred Tools",
-      "Interest Areas", "Team Preference", "Project Idea", "Expectations",
-      "Availability", "Dietary Restrictions"
-    ]
-
-    const csvContent = [
-      headers.join(","),
-      ...registrations.map(r => [
-        r.id,
-        new Date(r.created_at).toLocaleString(),
-        `"${r.full_name}"`,
-        r.email,
-        r.phone,
-        `"${r.college}"`,
-        `"${r.department}"`,
-        r.semester,
-        r.coding_experience,
-        `"${(r.preferred_tools || []).join("; ")}"`,
-        `"${(r.interest_areas || []).join("; ")}"`,
-        r.team_preference,
-        `"${(r.project_idea || "").replace(/"/g, '""')}"`,
-        `"${(r.expectations || "").replace(/"/g, '""')}"`,
-        r.availability,
-        `"${r.dietary_restrictions || ""}"`
-      ].join(","))
-    ].join("\n")
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(blob)
-    link.download = `vibe-a-thon-registrations-${new Date().toISOString().split("T")[0]}.csv`
-    link.click()
+  const getFilteredEntries = () => {
+    if (activeTab === "teams") return entries.filter(e => e.entry_type === "team")
+    if (activeTab === "individuals") return entries.filter(e => e.entry_type === "individual")
+    return entries
   }
 
-  // Login Screen
+  const filteredEntries = getFilteredEntries()
+
+  const totalEntries = entries.length
+  const teamEntries = entries.filter(e => e.entry_type === "team").length
+  const individualEntries = entries.filter(e => e.entry_type === "individual").length
+  const totalParticipants = entries.reduce((acc, e) => acc + e.members.length, 0)
+  const pendingCount = entries.filter(e => !e.status || e.status === "pending").length
+
+  const exportCSV = () => {
+    const headers = ["Type", "Team Name", "Team Code", "Idea Title", "Category", "Status", "Members", "Leader", "Created At"]
+    const rows = entries.map(e => {
+      const leader = e.members.find(m => m.is_leader)
+      return [
+        e.entry_type,
+        e.team_name || "N/A",
+        e.team_code || "N/A",
+        `"${e.idea_title}"`,
+        e.idea_category,
+        e.status || "pending",
+        e.members.length,
+        leader ? leader.full_name : "N/A",
+        new Date(e.created_at).toLocaleString()
+      ]
+    })
+    
+    const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n")
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "hackathon_entries.csv"
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const exportDetailedCSV = () => {
+    const headers = ["Entry Type", "Team Name", "Team Code", "Member Name", "Email", "Phone", "College", "Department", "Semester", "Is Leader", "Idea Title", "Category", "Status"]
+    const rows: string[][] = []
+    
+    entries.forEach(e => {
+      e.members.forEach(m => {
+        rows.push([
+          e.entry_type,
+          e.team_name || "N/A",
+          e.team_code || "N/A",
+          m.full_name,
+          m.email,
+          m.phone,
+          m.college,
+          m.department,
+          m.semester,
+          m.is_leader ? "Yes" : "No",
+          `"${e.idea_title}"`,
+          e.idea_category,
+          e.status || "pending"
+        ])
+      })
+    })
+    
+    const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n")
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "hackathon_participants.csv"
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-vibe-cream to-vibe-mint/20 p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-vibe-cream p-4">
+        <Card className="w-full max-w-md bg-white/80 border-vibe-mint">
           <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-vibe-teal/20 rounded-full flex items-center justify-center mb-4">
-              <Lock className="w-8 h-8 text-vibe-teal" />
+            <div className="mx-auto w-12 h-12 bg-vibe-teal/20 rounded-full flex items-center justify-center mb-2">
+              <Shield className="w-6 h-6 text-vibe-teal" />
             </div>
-            <CardTitle className="text-2xl text-vibe-dark">Admin Access</CardTitle>
-            <CardDescription>Enter password to view registrations</CardDescription>
+            <CardTitle className="text-2xl text-vibe-dark">Admin Login</CardTitle>
+            <CardDescription className="text-vibe-dark/60">
+              Enter password to access the admin dashboard
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter admin password"
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-vibe-dark/50 hover:text-vibe-dark"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
+                <Label htmlFor="password" className="text-vibe-dark">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-white border-vibe-mint text-vibe-dark"
+                  placeholder="Enter admin password"
+                />
               </div>
-              {error && (
-                <p className="text-sm text-vibe-red">{error}</p>
-              )}
-              <Button type="submit" className="w-full bg-vibe-teal hover:bg-vibe-teal/90">
+              {error && <p className="text-vibe-red text-sm">{error}</p>}
+              <Button type="submit" className="w-full bg-vibe-teal hover:bg-vibe-teal/90 text-white">
                 Login
               </Button>
             </form>
@@ -185,281 +218,251 @@ export default function AdminPage() {
     )
   }
 
-  // Admin Dashboard
   return (
-    <div className="min-h-screen bg-gradient-to-br from-vibe-cream to-vibe-mint/20">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-vibe-mint/30">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Users className="w-6 h-6 text-vibe-teal" />
-            <h1 className="text-xl font-bold text-vibe-dark">Vibe-a-thon Admin</h1>
+    <div className="min-h-screen bg-vibe-cream p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-vibe-dark flex items-center gap-2">
+              <Shield className="w-8 h-8 text-vibe-teal" />
+              Hackathon Admin
+            </h1>
+            <p className="text-vibe-dark/60">Manage registrations and participants</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchRegistrations}
-              disabled={loading}
-              className="gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={fetchData} className="border-vibe-mint text-vibe-dark hover:bg-vibe-mint/20">
+              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportToCSV}
-              disabled={registrations.length === 0}
-              className="gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="gap-2 text-vibe-red border-vibe-red/30 hover:bg-vibe-red/10"
-            >
-              <LogOut className="w-4 h-4" />
+            <Button variant="outline" onClick={handleLogout} className="border-vibe-mint text-vibe-dark hover:bg-vibe-mint/20">
+              <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-vibe-teal/20 rounded-full">
-                  <Users className="w-6 h-6 text-vibe-teal" />
-                </div>
-                <div>
-                  <p className="text-sm text-vibe-dark/60">Total Registrations</p>
-                  <p className="text-3xl font-bold text-vibe-dark">{registrations.length}</p>
-                </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <Card className="bg-white/80 border-vibe-mint">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 bg-vibe-teal/20 rounded-lg">
+                <Users className="w-5 h-5 text-vibe-teal" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-vibe-dark">{totalEntries}</p>
+                <p className="text-xs text-vibe-dark/60">Total Entries</p>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-vibe-mint/30 rounded-full">
-                  <Users className="w-6 h-6 text-vibe-teal" />
-                </div>
-                <div>
-                  <p className="text-sm text-vibe-dark/60">Khwopa Engineering College</p>
-                  <p className="text-3xl font-bold text-vibe-dark">
-                    {registrations.filter(r => r.college === "Khwopa Engineering College").length}
-                  </p>
-                </div>
+          
+          <Card className="bg-white/80 border-vibe-mint">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 bg-vibe-teal/20 rounded-lg">
+                <Users className="w-5 h-5 text-vibe-teal" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-vibe-dark">{teamEntries}</p>
+                <p className="text-xs text-vibe-dark/60">Teams</p>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-vibe-blush/30 rounded-full">
-                  <Users className="w-6 h-6 text-vibe-red" />
-                </div>
-                <div>
-                  <p className="text-sm text-vibe-dark/60">Khwopa College of Engineering</p>
-                  <p className="text-3xl font-bold text-vibe-dark">
-                    {registrations.filter(r => r.college === "Khwopa College of Engineering").length}
-                  </p>
-                </div>
+          
+          <Card className="bg-white/80 border-vibe-mint">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 bg-vibe-orange/20 rounded-lg">
+                <User className="w-5 h-5 text-vibe-orange" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-vibe-dark">{individualEntries}</p>
+                <p className="text-xs text-vibe-dark/60">Individuals</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/80 border-vibe-mint">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 bg-vibe-mint/50 rounded-lg">
+                <User className="w-5 h-5 text-vibe-teal" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-vibe-dark">{totalParticipants}</p>
+                <p className="text-xs text-vibe-dark/60">Participants</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-white/80 border-vibe-mint">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 bg-vibe-blush/50 rounded-lg">
+                <Clock className="w-5 h-5 text-vibe-orange" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-vibe-dark">{pendingCount}</p>
+                <p className="text-xs text-vibe-dark/60">Pending</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-vibe-red/10 border border-vibe-red/30 rounded-lg text-vibe-red">
-            {error}
-          </div>
-        )}
+        <div className="flex gap-2">
+          <Button onClick={exportCSV} variant="outline" className="border-vibe-teal text-vibe-teal hover:bg-vibe-teal/10">
+            <Download className="w-4 h-4 mr-2" />
+            Export Summary
+          </Button>
+          <Button onClick={exportDetailedCSV} variant="outline" className="border-vibe-orange text-vibe-orange hover:bg-vibe-orange/10">
+            <Download className="w-4 h-4 mr-2" />
+            Export Detailed
+          </Button>
+        </div>
 
-        {/* Registrations Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>All Registrations</CardTitle>
-            <CardDescription>Click on a row to view full details</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-12">
-                <RefreshCw className="w-8 h-8 animate-spin mx-auto text-vibe-teal mb-4" />
-                <p className="text-vibe-dark/60">Loading registrations...</p>
+        <Card className="bg-white/80 border-vibe-mint">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <CardTitle className="text-vibe-dark">Registrations</CardTitle>
+                <TabsList className="bg-vibe-light">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-vibe-teal data-[state=active]:text-white">
+                    All ({totalEntries})
+                  </TabsTrigger>
+                  <TabsTrigger value="teams" className="data-[state=active]:bg-vibe-teal data-[state=active]:text-white">
+                    Teams ({teamEntries})
+                  </TabsTrigger>
+                  <TabsTrigger value="individuals" className="data-[state=active]:bg-vibe-teal data-[state=active]:text-white">
+                    Individuals ({individualEntries})
+                  </TabsTrigger>
+                </TabsList>
               </div>
-            ) : registrations.length === 0 ? (
-              <div className="text-center py-12">
-                <Users className="w-12 h-12 mx-auto text-vibe-dark/30 mb-4" />
-                <p className="text-vibe-dark/60">No registrations yet</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-vibe-mint/30">
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">#</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Name</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Email</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Phone</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">College</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Department</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Semester</th>
-                      <th className="text-left py-3 px-4 font-medium text-vibe-dark/70">Registered</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {registrations.map((reg, index) => (
-                      <tr
-                        key={reg.id}
-                        onClick={() => setSelectedRegistration(reg)}
-                        className="border-b border-vibe-mint/20 hover:bg-vibe-mint/10 cursor-pointer transition-colors"
-                      >
-                        <td className="py-3 px-4 text-vibe-dark/60">{index + 1}</td>
-                        <td className="py-3 px-4 font-medium text-vibe-dark">{reg.full_name}</td>
-                        <td className="py-3 px-4 text-vibe-dark/80">{reg.email}</td>
-                        <td className="py-3 px-4 text-vibe-dark/80">{reg.phone}</td>
-                        <td className="py-3 px-4 text-vibe-dark/80">{reg.college}</td>
-                        <td className="py-3 px-4 text-vibe-dark/80">{reg.department}</td>
-                        <td className="py-3 px-4 text-vibe-dark/80">{reg.semester}</td>
-                        <td className="py-3 px-4 text-vibe-dark/60">
-                          {new Date(reg.created_at).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </CardContent>
+            </CardHeader>
+            <CardContent>
+              <TabsContent value={activeTab} className="mt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-vibe-mint/50">
+                        <TableHead className="text-vibe-dark">Type</TableHead>
+                        <TableHead className="text-vibe-dark">Name/Team</TableHead>
+                        <TableHead className="text-vibe-dark">Code</TableHead>
+                        <TableHead className="text-vibe-dark">Idea</TableHead>
+                        <TableHead className="text-vibe-dark">Members</TableHead>
+                        <TableHead className="text-vibe-dark">Status</TableHead>
+                        <TableHead className="text-vibe-dark">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredEntries.map((entry) => (
+                        <>
+                          <TableRow key={entry.id} className="border-vibe-mint/30 hover:bg-vibe-mint/10">
+                            <TableCell>
+                              <Badge variant={entry.entry_type === 'team' ? 'default' : 'secondary'}
+                                className={entry.entry_type === 'team' 
+                                  ? 'bg-vibe-teal text-white' 
+                                  : 'bg-vibe-orange text-white'}>
+                                {entry.entry_type === 'team' ? (
+                                  <><Users className="w-3 h-3 mr-1" /> Team</>
+                                ) : (
+                                  <><User className="w-3 h-3 mr-1" /> Solo</>
+                                )}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-vibe-dark font-medium">
+                              {entry.entry_type === 'team' 
+                                ? entry.team_name 
+                                : entry.members[0]?.full_name || 'N/A'}
+                            </TableCell>
+                            <TableCell className="font-mono text-vibe-teal">
+                              {entry.team_code || '-'}
+                            </TableCell>
+                            <TableCell className="text-vibe-dark max-w-[200px] truncate">
+                              {entry.idea_title}
+                            </TableCell>
+                            <TableCell className="text-vibe-dark">
+                              {entry.members.length}
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={
+                                entry.status === 'approved' ? 'bg-green-500 text-white' :
+                                entry.status === 'rejected' ? 'bg-vibe-red text-white' :
+                                'bg-vibe-blush text-vibe-dark'
+                              }>
+                                {entry.status || 'pending'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => setSelectedEntry(selectedEntry === entry.id ? null : entry.id)}
+                                  className="text-vibe-teal hover:bg-vibe-teal/10"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => updateStatus(entry.id, 'approved')}
+                                  className="text-green-600 hover:bg-green-50"
+                                >
+                                  <CheckCircle className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => updateStatus(entry.id, 'rejected')}
+                                  className="text-vibe-red hover:bg-vibe-red/10"
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                          
+                          {selectedEntry === entry.id && (
+                            <TableRow className="bg-vibe-light/50">
+                              <TableCell colSpan={7}>
+                                <div className="p-4 space-y-4">
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <h4 className="font-semibold text-vibe-dark mb-2">Project Details</h4>
+                                      <p className="text-sm text-vibe-dark/60"><strong>Category:</strong> {entry.idea_category}</p>
+                                      <p className="text-sm text-vibe-dark/60 mt-2"><strong>Description:</strong></p>
+                                      <p className="text-sm text-vibe-dark/80 mt-1">{entry.idea_description}</p>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-semibold text-vibe-dark mb-2">Members ({entry.members.length})</h4>
+                                      <div className="space-y-2">
+                                        {entry.members.map((member, idx) => (
+                                          <div key={idx} className={`p-2 rounded text-sm ${member.is_leader ? 'bg-vibe-orange/10 border border-vibe-orange/30' : 'bg-white'}`}>
+                                            <p className="font-medium text-vibe-dark">
+                                              {member.full_name}
+                                              {member.is_leader && <Badge className="ml-2 bg-vibe-orange text-white text-xs">Leader</Badge>}
+                                            </p>
+                                            <p className="text-vibe-dark/60 text-xs">{member.email} • {member.phone}</p>
+                                            <p className="text-vibe-dark/60 text-xs">{member.college} • {member.department} • {member.semester}</p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {filteredEntries.length === 0 && (
+                  <div className="text-center py-12 text-vibe-dark/50">
+                    No entries found
+                  </div>
+                )}
+              </TabsContent>
+            </CardContent>
+          </Tabs>
         </Card>
-
-        {/* Detail Modal */}
-        {selectedRegistration && (
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={() => setSelectedRegistration(null)}
-          >
-            <Card
-              className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <CardHeader className="flex flex-row items-start justify-between">
-                <div>
-                  <CardTitle className="text-vibe-dark">{selectedRegistration.full_name}</CardTitle>
-                  <CardDescription>Registration Details</CardDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedRegistration(null)}
-                >
-                  ✕
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Email</p>
-                    <p className="font-medium">{selectedRegistration.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Phone</p>
-                    <p className="font-medium">{selectedRegistration.phone}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">College</p>
-                    <p className="font-medium">{selectedRegistration.college}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Department</p>
-                    <p className="font-medium">{selectedRegistration.department}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Semester</p>
-                    <p className="font-medium">{selectedRegistration.semester}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Coding Experience</p>
-                    <p className="font-medium">{selectedRegistration.coding_experience || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Team Preference</p>
-                    <p className="font-medium">{selectedRegistration.team_preference || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-vibe-dark/60">Availability</p>
-                    <p className="font-medium">{selectedRegistration.availability || "N/A"}</p>
-                  </div>
-                </div>
-
-                {selectedRegistration.preferred_tools?.length > 0 && (
-                  <div>
-                    <p className="text-sm text-vibe-dark/60 mb-2">Preferred Tools</p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedRegistration.preferred_tools.map((tool) => (
-                        <span key={tool} className="px-2 py-1 bg-vibe-mint/30 rounded text-sm">
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selectedRegistration.interest_areas?.length > 0 && (
-                  <div>
-                    <p className="text-sm text-vibe-dark/60 mb-2">Interest Areas</p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedRegistration.interest_areas.map((area) => (
-                        <span key={area} className="px-2 py-1 bg-vibe-blush/30 rounded text-sm">
-                          {area}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selectedRegistration.project_idea && (
-                  <div>
-                    <p className="text-sm text-vibe-dark/60 mb-1">Project Idea</p>
-                    <p className="text-vibe-dark bg-vibe-cream/50 p-3 rounded">
-                      {selectedRegistration.project_idea}
-                    </p>
-                  </div>
-                )}
-
-                {selectedRegistration.expectations && (
-                  <div>
-                    <p className="text-sm text-vibe-dark/60 mb-1">Expectations</p>
-                    <p className="text-vibe-dark bg-vibe-cream/50 p-3 rounded">
-                      {selectedRegistration.expectations}
-                    </p>
-                  </div>
-                )}
-
-                {selectedRegistration.dietary_restrictions && (
-                  <div>
-                    <p className="text-sm text-vibe-dark/60 mb-1">Dietary Restrictions</p>
-                    <p className="font-medium">{selectedRegistration.dietary_restrictions}</p>
-                  </div>
-                )}
-
-                <div className="pt-4 border-t border-vibe-mint/30 text-sm text-vibe-dark/50">
-                  Registered on: {new Date(selectedRegistration.created_at).toLocaleString()}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
+      </div>
     </div>
   )
 }
